@@ -1,0 +1,22 @@
+SET SERVEROUTPUT ON;
+DECLARE
+algo VARCHAR2(120);
+BEGIN
+dbms_output.put_line('Probaremos un cursor implicito');
+--Cursor implicito
+SELECT NOMBRE INTO algo FROM USUARIO1 WHERE ID_USUARIO1=1;
+dbms_output.put_line('En la memoria global esta ' || algo);
+END;
+/ 
+-- El mismo ejercicio con cursor explicito para obtener muchas filas en memoria
+-- Aqui se declara el cursor explicito
+DECLARE
+CURSOR cur_usuario1 IS SELECT * FROM usuario1;
+BEGIN 
+  --Aqui se itera sobre todo el cursor 
+  --Vas a iterar en este cursor rec_usuario
+  FOR rec_usuario IN  cur_usuario1 LOOP
+  dbms_output.put_line('En este momento esta en memoria: ' ||rec_usuario.NOMBRE);
+  END LOOP;
+  END;
+  /
