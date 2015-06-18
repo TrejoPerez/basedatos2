@@ -1,0 +1,91 @@
+SET SERVEROUTPUT ON;
+CREATE TABLE aerolinea(
+id_aerolinea integer,
+nombre varchar2(120),
+CONSTRAINT id_erolinea PRIMARY KEY(id_aerolinea)
+);
+CREATE TABLE avion(
+id_avion integer,
+id_erolinea integer,
+asiento integer,
+CONSTRAINT id_avion_pk PRIMARY KEY(id_avion),
+CONSTRAINT id_erolinea_fk FOREIGN KEY(id_erolinea) REFERENCES aerolinea(id_aerolinea)
+);
+
+CREATE TABLE vuelo(
+id_vuelo integer,
+id_avion integer,
+id_aerolinea integer,
+destino VARCHAR2(50),
+dia_vuelo varchar2(15),
+hr_vuelo varchar2(10),
+CONSTRAINT id_avion_fk FOREIGN KEY(id_avion) REFERENCES avion(id_avion),
+CONSTRAINT id_aerolinea_fk FOREIGN KEY(id_aerolinea) REFERENCES aerolinea(id_aerolinea),
+CONSTRAINT id_vuelo_pk PRIMARY KEY (id_vuelo)
+);
+
+CREATE TABLE pasajeros(
+id_pasajero integer,
+id_vuelo integer,
+nombre_pasajero VARCHAR2(30),
+CONSTRAINT id_pasajero_pk PRIMARY KEY(id_pasajero),
+CONSTRAINT id_vuelo_fk FOREIGN KEY(id_vuelo) REFERENCES vuelo(id_vuelo)
+);
+
+create sequence sec_aerolinea
+start with 1
+increment by 1
+nomaxvalue;
+create sequence sec_avion
+start with 1
+increment by 1
+nomaxvalue;
+
+create sequence sec_vuelo
+start with 1
+increment by 1
+nomaxvalue;
+
+create sequence se_pasajero
+start with 1
+increment by 1
+nomaxvalue;
+
+
+CREATE OR REPLACE PROCEDURE guardar_aerolinea(
+my_id_aerolinea OUT INTEGER,my_nombre IN VARCHAR2)
+AS
+BEGIN
+SELECT sec_aerolinea.NEXTVAL INTO my_id_aerolinea FROM DUAL;
+INSERT  INTO aerolinea VALUES(my_id_aerolinea,my_nombre);
+END;
+/
+CREATE OR REPLACE PROCEDURE guardar_avion(
+my_id_avion OUT INTEGER, my_id_aerolinea IN INTEGER,my_asiento IN INTEGER)
+AS
+BEGIN
+SELECT sec_avion.NEXTVAL INTO my_id_avion FROM DUAL;
+INSERT INTO avion VALUES(my_id_avion,my_id_aerolinea,my_asiento);
+END;
+/
+--Procedimiento vuelo
+
+CREATE OR REPLACE PROCEDURE guardar_vuelo(
+my_id_vuelo OUT INTEGER,my_id_avion IN INTEGER,my_id_aerolinea IN INTEGER,my_destino IN VARCHAR2,
+my_dia_vuelo IN VARCHAR2,my_hr_vuelo IN VARCHAR2)
+AS
+BEGIN
+SELECT sec_vuelo.NEXTVAL INTO my_id_vuelo FROM DUAL;
+INSERT INTO vuelo VALUES(my_id_vuelo,my_id_avion,my_id_aerolinea,my_destino,my_dia_vuelo,my_hr_vuelo);
+END;
+/
+
+--PROCEDIMIENTO pasajero
+CREATE OR REPLACE PROCEDURE guardar_pasajero(
+my_id_pasajero OUT INTEGER,my_id_vuelo OUT INTEGER,my_nombre_pasajero OUT VARCHAR2)
+AS
+BEGIN
+SELECT se_pasajero.NEXTVAL INTO my_id_pasajero FROM DUAL;
+INSERT INTO pasajeros VALUES(my_id_pasajero,my_id_vuelo,my_nombre_pasajero);
+END;
+/
