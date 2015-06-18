@@ -1,0 +1,38 @@
+CREATE TABLE aerolinea (id_aerolinea integer , 
+                        nombre varchar2 (120), CONSTRAINT id_aerolinea PRIMARY KEY(id_aerolinea)
+                        );
+
+CREATE TABLE avion(id_avion integer,
+                    id_aerolinea integer,
+                    asiento integer,
+                    CONSTRAINT id_avion_pk PRIMARY KEY(id_avion),
+                    CONSTRAINT id_aerolinea_fk FOREIGN KEY (id_aerolinea) REFERENCES aerolinea (id_aerolinea)
+                    );
+
+CREATE SEQUENCE sec_aerolinea
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE;
+
+CREATE SEQUENCE sec_avion
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE;
+
+CREATE OR REPLACE PROCEDURE guardar_aerolinea (
+my_id_aerolinea OUT INTEGER, my_nombre IN VARCHAR2)
+AS
+BEGIN 
+SELECT sec_aerolinea.NEXTVAL INTO my_id_aerolinea FROM DUAL;
+--AQUI VA A VERFIFICAR EL ID DONDE SE QUEDO POR ULTIMA VEZ
+INSERT INTO aerolinea VALUES (my_id_aerolinea, my_nombre);
+END;
+
+CREATE OR REPLACE PROCEDURE guardar_avion (
+my_id_avion OUT INTEGER, my_id_aerolinea IN INTEGER, my_asiento IN INTEGER)
+AS
+BEGIN
+SELECT sec_avion.NEXTVAL INTO my_id_avion FROM DUAL;
+INSERT INTO avion VALUES (my_id_avion, my_id_aerolinea, my_asiento);
+END;
+
