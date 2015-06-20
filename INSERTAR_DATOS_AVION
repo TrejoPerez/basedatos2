@@ -1,0 +1,67 @@
+CREATE TABLE aerolinea (id_aerolinea integer , 
+                        nombre varchar2 (120), 
+                        CONSTRAINT id_aerolinea PRIMARY KEY(id_aerolinea)
+                        );
+
+CREATE TABLE avion(id_avion integer,
+                    id_aerolinea integer,
+                    asiento integer,
+                    CONSTRAINT id_avion_pk PRIMARY KEY(id_avion),
+                    CONSTRAINT id_aerolinea_fk FOREIGN KEY (id_aerolinea) REFERENCES aerolinea (id_aerolinea)
+                    );
+
+CREATE SEQUENCE sec_aerolinea
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE;
+
+CREATE SEQUENCE sec_avion
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE;
+
+CREATE OR REPLACE PROCEDURE guardar_aerolinea (
+my_id_aerolinea OUT INTEGER, my_nombre IN VARCHAR2)
+AS
+BEGIN 
+SELECT sec_aerolinea.NEXTVAL INTO my_id_aerolinea FROM DUAL;
+--AQUI VA A VERFIFICAR EL ID DONDE SE QUEDO POR ULTIMA VEZ
+INSERT INTO aerolinea VALUES (my_id_aerolinea, my_nombre);
+END;
+
+CREATE OR REPLACE PROCEDURE guardar_avion (
+my_id_avion OUT INTEGER, my_id_aerolinea IN INTEGER, my_asiento IN INTEGER)
+AS
+BEGIN
+SELECT sec_avion.NEXTVAL INTO my_id_avion FROM DUAL;
+INSERT INTO avion VALUES (my_id_avion, my_id_aerolinea, my_asiento);
+END;
+
+DECLARE 
+aerolinea integer;
+BEGIN
+guardar_aerolinea(aerolinea,'Aeromexico');
+guardar_aerolinea(aerolinea,'Continental Airlines');
+guardar_aerolinea(aerolinea,'Airbus');
+guardar_aerolinea(aerolinea,'American Airlines');
+END;
+
+DECLARE 
+asientos integer;
+BEGIN 
+guardar_asientos(asientos,1,200);
+guardar_asientos(asientos,2,120);
+guardar_asientos(asientos,3,140);
+guardar_asientos(asientos,4,160);
+END;
+
+SET SERVEROUTPUT ON;
+SELECT * FROM aerolinea;
+/
+DECLARE
+CURSOR cursor_aeropuerto IS SELECT aero.nombre, avi.asientos FROM aerolinea aero, avion avi WHERE aeroid_aerolinea = avi.id_aerolinea;
+BEGIN
+FRO rec_registro IN cursor_aeropuerto LOOP 
+DBMS_OUTPUT.PUT_LUINE('Aerolinea:' || rec_registro.nombre || 'el numero de asientoe s : '|| rec_registro.asientos
+END LOOP:
+END;
