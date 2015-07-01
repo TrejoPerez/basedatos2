@@ -1,0 +1,23 @@
+CREATE OR REPLACE PROCEDURE guardar_boleto(my_id_avion out integer,my_id_aerolinea in integer,my_boleto in integer)
+as
+cuenta integer;
+begin
+--UPDATE avion SET cuenta=SUM(asiento) WHERE id='';
+SELECT SUM(asiento) INTO cuenta FROM avion;
+if cuenta >=50 then
+RAISE_APPLICATION_ERROR(-20001,'Ya no hay mas asientos');
+end if;
+select sec_avion.NEXTVAL into my_id_avion from dual;
+insert into avion values(my_id_avion,my_id_aerolinea,my_boleto);
+dbms_output.put_line('el total de asientos comprados '||cuenta);
+end;
+/
+DECLARE
+avion INTEGER;
+BEGIN
+guardar_boleto(avion,1,10);
+END;
+/
+select * from avion;
+
+SELECT sum(asiento) AS suma FROM avion;
